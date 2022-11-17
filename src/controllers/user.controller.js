@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt'
 import { v4 as uuid } from 'uuid'
-import { usersCollection } from '../index.js';
-import { sessionsCollection } from '../index.js';
+import { usersCollection } from '../database/database.js';
+import { sessionsCollection } from '../database/database.js';
 import { signUpSchema } from '../index.js';
 import { signInSchema } from '../index.js';
 

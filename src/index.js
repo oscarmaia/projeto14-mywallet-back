@@ -1,19 +1,20 @@
 import express from 'express'
-import { MongoClient } from 'mongodb'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import joi from 'joi';
-import { postSignIn } from './controllers/user.controller.js'
-import { postSignUp } from './controllers/user.controller.js'
+import signInRouter from './routes/signInRouter.js'
+import signUpRouter from './routes/signUpRouter.js'
+
+
+dotenv.config();
 const app = express();
 
 //configs
 app.use(cors());
 app.use(express.json());
-dotenv.config();
+app.use(signInRouter);
+app.use(signUpRouter);
 
-const mongoClient = new MongoClient(process.env.MONGO_URI);
-let db;
 
 //schemas
 export const signUpSchema = joi.object({
@@ -27,20 +28,6 @@ export const signInSchema = joi.object({
     password:joi.string().min(6).required()
 })
 
-//connect to database
-try {
-    await mongoClient.connect();
-    console.log("Connected to database successfully");
-    db = mongoClient.db("myWallet");
-} catch (error) {
-    console.log(error);
-}
-
-export const usersCollection = db.collection("users");
-export const sessionsCollection = db.collection("sessions");
-
-app.post('/sign-in',postSignIn);
-app.post('/sign-up',postSignUp);
 
 
 const port = process.env.PORT || 5000;
