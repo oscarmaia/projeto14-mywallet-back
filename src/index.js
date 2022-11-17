@@ -3,7 +3,7 @@ import { MongoClient } from 'mongodb'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import joi from 'joi';
-//import { postSignIn } from './controllers/user.controller.js'
+import { postSignIn } from './controllers/user.controller.js'
 import { postSignUp } from './controllers/user.controller.js'
 const app = express();
 
@@ -16,8 +16,13 @@ const mongoClient = new MongoClient(process.env.MONGO_URI);
 let db;
 
 //schemas
-export const userSchema = joi.object({
+export const signUpSchema = joi.object({
     name:joi.string().min(3).max(51).required(),
+    email:joi.string().email().required(),
+    password:joi.string().min(6).required()
+})
+
+export const signInSchema = joi.object({
     email:joi.string().email().required(),
     password:joi.string().min(6).required()
 })
@@ -31,9 +36,10 @@ try {
     console.log(error);
 }
 
-export const userCollection = db.collection("users");
+export const usersCollection = db.collection("users");
+export const sessionsCollection = db.collection("sessions");
 
-//app.post('/sign-in',postSignIn);
+app.post('/sign-in',postSignIn);
 app.post('/sign-up',postSignUp);
 
 
