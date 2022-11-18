@@ -16,7 +16,7 @@ export async function postSignIn(req, res) {
             const token = uuid();
             const isUserSessionExists = await sessionsCollection.findOne({userId:userExists._id})
             if(isUserSessionExists){
-                return res.send("user already loggedin")
+                await sessionsCollection.deleteOne({_id:isUserSessionExists._id})
             }
             await sessionsCollection.insertOne({
                 userId: userExists._id,
