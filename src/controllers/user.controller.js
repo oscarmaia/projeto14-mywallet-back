@@ -22,7 +22,7 @@ export async function postSignIn(req, res) {
                 userId: userExists._id,
                 token
             })
-            res.send(token)
+            res.send({token})
         }
 
     } catch (error) {
