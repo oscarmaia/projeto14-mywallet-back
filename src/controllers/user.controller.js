@@ -9,7 +9,7 @@ export async function postSignIn(req, res) {
 
         const userExists = await usersCollection.findOne({ email })
         if (!userExists) {
-            return res.sendStatus(404);//not found
+            return res.status(404).send("user not found");//not found
         }
 
         if (userExists && bcrypt.compareSync(password, userExists.password)) {
@@ -23,6 +23,8 @@ export async function postSignIn(req, res) {
                 token
             })
             res.send({token})
+        }else{
+            return res.status(401).send("wrong password");//not found
         }
 
     } catch (error) {
@@ -46,5 +48,16 @@ export async function postSignUp(req, res) {
     } catch (error) {
         console.log(error);
         res.sendStatus(500);
+    }
+}
+
+export async function getUserLoggedIn(req,res){
+    try {
+        console.log(req)
+        res.status(200).send("usuario logado!")
+
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
     }
 }
