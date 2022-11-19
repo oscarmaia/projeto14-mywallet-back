@@ -14,16 +14,16 @@ export async function postSignIn(req, res) {
 
         if (userExists && bcrypt.compareSync(password, userExists.password)) {
             const token = uuid();
-            const isUserSessionExists = await sessionsCollection.findOne({userId:userExists._id})
-            if(isUserSessionExists){
-                await sessionsCollection.deleteOne({_id:isUserSessionExists._id})
+            const isUserSessionExists = await sessionsCollection.findOne({ userId: userExists._id })
+            if (isUserSessionExists) {
+                await sessionsCollection.deleteOne({ _id: isUserSessionExists._id })
             }
             await sessionsCollection.insertOne({
                 userId: userExists._id,
                 token
             })
-            res.send({token})
-        }else{
+            res.send({ token })
+        } else {
             return res.status(401).send("wrong password");//not found
         }
 
@@ -35,8 +35,8 @@ export async function postSignIn(req, res) {
 
 export async function postSignUp(req, res) {
     try {
-        const {email, password} = req.body;
-        
+        const { email, password } = req.body;
+
         const userExists = await usersCollection.findOne({ email });
         if (userExists) {
             return res.sendStatus(409); // conflict - already registered
@@ -51,10 +51,21 @@ export async function postSignUp(req, res) {
     }
 }
 
-export async function getUserLoggedIn(req,res){
+export async function getUserLoggedIn(req, res) {
     try {
-        console.log(req)
-        res.status(200).send("usuario logado!")
+        const { token } = req.headers;
+        if (!token) {
+            return res.status(401).send("invalid token");
+        }
+        const userSession = await sessionsCollection.findOne({ token });
+        if (!userSession) {
+            return res.status(404).send("user is not connected");
+        } else {
+            const user = await usersCollection.findOne({ _id: userSession.userId })
+            delete user.password;
+            res.send(user)
+        }
+
 
     } catch (error) {
         console.log(error)
