@@ -4,7 +4,7 @@ export async function tokenValidate(req, res, next) {
     console.log("ENTROU NO TOKEN VALIDATE")
     try {
         const bearer = req.headers.token;
-        const token = bearer.replace("Bearer ", "")
+        const token = bearer?.replace("Bearer ", "")
         console.log(token)
         if (!token) {
             return res.status(401).send("invalid token");
