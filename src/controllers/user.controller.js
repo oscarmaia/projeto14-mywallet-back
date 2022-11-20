@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt'
+import { ObjectID } from 'bson';
 import dayjs from 'dayjs';
 import { v4 as uuid } from 'uuid'
 import { entriesCollection, usersCollection } from '../database/database.js';
@@ -97,11 +98,27 @@ export async function getEntries(req, res) {
         const user = res.locals.user;
         const entriesByUser = await entriesCollection.find({ userId: user._id }).toArray();
         const requestedUser = {
-            name:user.name,
-            email:user.email,
-            _entries:entriesByUser
+            userId: user._id,
+            name: user.name,
+            email: user.email,
+            _entries: entriesByUser
         }
         res.status(200).send(requestedUser);
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+}
+
+export async function postLogout(req, res) {
+    try {
+        const { _id } = req.body
+        const session = await sessionsCollection.findOne({ userId: ObjectID(_id) });
+        if (!session) {
+            res.sendStatus(404);
+        }
+        await sessionsCollection.deleteOne({ userId: session.userId })
+        res.sendStatus(200);
     } catch (error) {
         console.log(error)
         res.sendStatus(500)
