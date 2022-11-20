@@ -52,19 +52,18 @@ export async function postSignUp(req, res) {
 }
 
 export async function getUserLoggedIn(req, res) {
+    console.log('entrou no user logged in')
     try {
-        const { token } = req.headers;
-        if (!token) {
-            return res.status(401).send("invalid token");
-        }
-        const userSession = await sessionsCollection.findOne({ token });
-        if (!userSession) {
-            return res.status(404).send("user is not connected");
-        } else {
-            const user = await usersCollection.findOne({ _id: userSession.userId })
-            delete user.password;
-            res.send(user)
-        }
+        res.status(200).send(res.locals.user)
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+}
+
+export async function postIncoming(req, res) {
+    try {
+
 
 
     } catch (error) {
