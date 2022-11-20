@@ -52,27 +52,17 @@ export async function postSignUp(req, res) {
     }
 }
 
-export async function getUserLoggedIn(req, res) {
-    console.log('entrou no user logged in')
-    try {
-        res.status(200).send(res.locals.user)
-    } catch (error) {
-        console.log(error)
-        res.sendStatus(500)
-    }
-}
-
 export async function postIncoming(req, res) {
     try {
         const user = res.locals.user;
-        const{value, description} = req.body;
+        const { value, description } = req.body;
         const timeNow = Date.now();
         const entry = {
-            userId:user._id,
+            userId: user._id,
             value,
             description,
-            type:"incoming",
-            date:dayjs(timeNow).format("DD/MM")
+            type: "incoming",
+            date: dayjs(timeNow).format("DD/MM")
         }
         await entriesCollection.insertOne(entry);
         res.sendStatus(201);
@@ -85,17 +75,29 @@ export async function postIncoming(req, res) {
 export async function postExpense(req, res) {
     try {
         const user = res.locals.user;
-        const{value, description} = req.body;
+        const { value, description } = req.body;
         const timeNow = Date.now();
         const entry = {
-            userId:user._id,
+            userId: user._id,
             value,
             description,
-            type:"expense",
-            date:dayjs(timeNow).format("DD/MM")
+            type: "expense",
+            date: dayjs(timeNow).format("DD/MM")
         }
         await entriesCollection.insertOne(entry);
         res.sendStatus(201);
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+}
+
+export async function getEntries(req, res) {
+    try {
+        console.log("getEntries func")
+        const user = res.locals.user;
+        const entriesByUser = await entriesCollection.find({ userId: user._id }).toArray();
+        res.status(200).send(entriesByUser);
     } catch (error) {
         console.log(error)
         res.sendStatus(500)
