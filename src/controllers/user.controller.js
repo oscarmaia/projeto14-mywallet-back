@@ -97,7 +97,12 @@ export async function getEntries(req, res) {
         console.log("getEntries func")
         const user = res.locals.user;
         const entriesByUser = await entriesCollection.find({ userId: user._id }).toArray();
-        res.status(200).send(entriesByUser);
+        const requestedUser = {
+            name:user.name,
+            email:user.email,
+            _entries:entriesByUser
+        }
+        res.status(200).send(requestedUser);
     } catch (error) {
         console.log(error)
         res.sendStatus(500)
