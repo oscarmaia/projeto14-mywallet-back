@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt'
+import dayjs from 'dayjs';
 import { v4 as uuid } from 'uuid'
-import { usersCollection } from '../database/database.js';
+import { entriesCollection, usersCollection } from '../database/database.js';
 import { sessionsCollection } from '../database/database.js';
 
 export async function postSignIn(req, res) {
@@ -63,9 +64,38 @@ export async function getUserLoggedIn(req, res) {
 
 export async function postIncoming(req, res) {
     try {
+        const user = res.locals.user;
+        const{value, description} = req.body;
+        const timeNow = Date.now();
+        const entry = {
+            userId:user._id,
+            value,
+            description,
+            type:"incoming",
+            date:dayjs(timeNow).format("DD/MM")
+        }
+        await entriesCollection.insertOne(entry);
+        res.sendStatus(201);
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+}
 
-
-
+export async function postExpense(req, res) {
+    try {
+        const user = res.locals.user;
+        const{value, description} = req.body;
+        const timeNow = Date.now();
+        const entry = {
+            userId:user._id,
+            value,
+            description,
+            type:"expense",
+            date:dayjs(timeNow).format("DD/MM")
+        }
+        await entriesCollection.insertOne(entry);
+        res.sendStatus(201);
     } catch (error) {
         console.log(error)
         res.sendStatus(500)

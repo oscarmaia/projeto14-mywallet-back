@@ -16,3 +16,4 @@ try {
 
 export const usersCollection = db.collection("users");
 export const sessionsCollection = db.collection("sessions");
+export const entriesCollection = db.collection("entries");
