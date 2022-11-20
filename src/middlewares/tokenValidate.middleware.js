@@ -1,7 +1,6 @@
 import { sessionsCollection, usersCollection } from "../database/database.js";
 
 export async function tokenValidate(req, res, next) {
-    console.log("ENTROU NO TOKEN VALIDATE")
     try {
         const bearer = req.headers.token;
         const token = bearer?.replace("Bearer ", "")

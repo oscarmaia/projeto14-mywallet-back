@@ -94,7 +94,6 @@ export async function postExpense(req, res) {
 
 export async function getEntries(req, res) {
     try {
-        console.log("getEntries func")
         const user = res.locals.user;
         const entriesByUser = await entriesCollection.find({ userId: user._id }).toArray();
         const requestedUser = {
