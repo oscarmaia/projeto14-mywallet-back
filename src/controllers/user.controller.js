@@ -5,6 +5,8 @@ import { v4 as uuid } from 'uuid'
 import { entriesCollection, usersCollection } from '../database/database.js';
 import { sessionsCollection } from '../database/database.js';
 
+
+
 export async function postSignIn(req, res) {
     try {
         const { email, password } = req.body;
