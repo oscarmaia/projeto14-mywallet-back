@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt'
 import { ObjectID } from 'bson';
-import dayjs from 'dayjs';
 import { v4 as uuid } from 'uuid'
 import { entriesCollection, usersCollection } from '../database/database.js';
 import { sessionsCollection } from '../database/database.js';
+import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc.js';
 import timezone from 'dayjs/plugin/timezone.js';
 dayjs.extend(utc);
@@ -58,9 +58,9 @@ export async function postSignUp(req, res) {
 
 export async function postIncoming(req, res) {
     try {
-        const timeZone = dayjs.tz.guess();
+        const timeZoneBr = "America/Sao_Paulo";
         const timeNow = dayjs().format(`YYYY-MM-DD HH:mm:ss`);
-        const timeInBrazil = dayjs.tz(timeNow).tz(timeZone).format("DD/MM")
+        const timeInBrazil = dayjs.tz(timeNow).tz(timeZoneBr).format("DD/MM")
         const user = res.locals.user;
         const { value, description } = req.body;
         const entry = {
@@ -80,7 +80,7 @@ export async function postIncoming(req, res) {
 
 export async function postExpense(req, res) {
     try {
-        const timeZone = dayjs.tz.guess();
+        const timeZoneBr = "America/Sao_Paulo";
         const timeNow = dayjs().format(`YYYY-MM-DD HH:mm:ss`);
         const timeInBrazil = dayjs.tz(timeNow).tz(timeZone).format("DD/MM")
         const user = res.locals.user;
@@ -126,6 +126,16 @@ export async function postLogout(req, res) {
         }
         await sessionsCollection.deleteOne({ userId: session.userId })
         res.sendStatus(200);
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+}
+
+export async function deleteEntry(req, res) {
+    const id = req.params;
+    try {
+        res.send(id)
     } catch (error) {
         console.log(error)
         res.sendStatus(500)
