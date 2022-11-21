@@ -142,3 +142,15 @@ export async function deleteEntry(req, res) {
         res.sendStatus(500)
     }
 }
+
+
+export async function updateEntry(req, res) {
+    const id = req.params;
+    try {
+        await entriesCollection.deleteOne({_id:ObjectID(id)});
+        res.sendStatus(200);
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+}

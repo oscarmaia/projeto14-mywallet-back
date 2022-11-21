@@ -2,8 +2,9 @@ import { sessionsCollection, usersCollection } from "../database/database.js";
 
 export async function tokenValidate(req, res, next) {
     try {
-        const bearer = req.headers.token;
-        const token = bearer?.replace("Bearer ", "")
+        const {authorization} = req.headers;
+        const token = authorization?.replace("Bearer ", "")
+        console.log(token)
         if (!token) {
             return res.status(404).send("token not found");
         }
