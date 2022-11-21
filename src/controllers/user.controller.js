@@ -64,7 +64,7 @@ export async function postIncoming(req, res) {
             value,
             description,
             type: "incoming",
-            date: dayjs(timeNow).format("DD/MM")
+            date: dayjs().format("DD/MM")
         }
         await entriesCollection.insertOne(entry);
         res.sendStatus(201);
@@ -78,13 +78,12 @@ export async function postExpense(req, res) {
     try {
         const user = res.locals.user;
         const { value, description } = req.body;
-        const timeNow = Date.now();
         const entry = {
             userId: user._id,
             value,
             description,
             type: "expense",
-            date: dayjs(timeNow).format("DD/MM")
+            date: dayjs().format("DD/MM")
         }
         await entriesCollection.insertOne(entry);
         res.sendStatus(201);
