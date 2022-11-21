@@ -135,7 +135,8 @@ export async function postLogout(req, res) {
 export async function deleteEntry(req, res) {
     const id = req.params;
     try {
-        res.send(id)
+        await entriesCollection.deleteOne({_id:ObjectID(id)});
+        res.sendStatus(200);
     } catch (error) {
         console.log(error)
         res.sendStatus(500)
