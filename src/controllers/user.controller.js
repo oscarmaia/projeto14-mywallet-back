@@ -13,9 +13,8 @@ export async function postSignIn(req, res) {
 
         const userExists = await usersCollection.findOne({ email })
         if (!userExists) {
-            return res.status(404).send("user not found");//not found
+            return res.status(404).send("email not registered");//not found
         }
-
         if (userExists && bcrypt.compareSync(password, userExists.password)) {
             const token = uuid();
             const isUserSessionExists = await sessionsCollection.findOne({ userId: userExists._id })
@@ -43,7 +42,7 @@ export async function postSignUp(req, res) {
 
         const userExists = await usersCollection.findOne({ email });
         if (userExists) {
-            return res.sendStatus(409); // conflict - already registered
+            return res.status(409).send("email already registered"); // conflict - already registered
         }
         const passwordCrypted = bcrypt.hashSync(password, 10);
         req.body.password = passwordCrypted;
