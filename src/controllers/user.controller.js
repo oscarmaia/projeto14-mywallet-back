@@ -82,7 +82,7 @@ export async function postExpense(req, res) {
     try {
         const timeZoneBr = "America/Sao_Paulo";
         const timeNow = dayjs().format(`YYYY-MM-DD HH:mm:ss`);
-        const timeInBrazil = dayjs.tz(timeNow).tz(timeZone).format("DD/MM")
+        const timeInBrazil = dayjs.tz(timeNow).tz(timeZoneBr).format("DD/MM")
         const user = res.locals.user;
         const { value, description } = req.body;
         const entry = {
