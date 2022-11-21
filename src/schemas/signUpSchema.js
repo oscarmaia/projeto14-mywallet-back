@@ -1,6 +1,6 @@
 import joi from 'joi';
 const signUpSchema = joi.object({
-    name:joi.string().min(3).max(51).required(),
+    name:joi.string().min(3).max(16).required(),
     email:joi.string().email().required(),
     password:joi.string().min(6).required()
 })
