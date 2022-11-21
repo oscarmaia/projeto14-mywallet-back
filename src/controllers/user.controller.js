@@ -4,8 +4,10 @@ import dayjs from 'dayjs';
 import { v4 as uuid } from 'uuid'
 import { entriesCollection, usersCollection } from '../database/database.js';
 import { sessionsCollection } from '../database/database.js';
-
-
+import utc from 'dayjs/plugin/utc.js';
+import timezone from 'dayjs/plugin/timezone.js';
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export async function postSignIn(req, res) {
     try {
@@ -56,15 +58,17 @@ export async function postSignUp(req, res) {
 
 export async function postIncoming(req, res) {
     try {
+        const timeZone = dayjs.tz.guess();
+        const timeNow = dayjs().format(`YYYY-MM-DD HH:mm:ss`);
+        const timeInBrazil = dayjs.tz(timeNow).tz(timeZone).format("DD/MM")
         const user = res.locals.user;
         const { value, description } = req.body;
-        const timeNow = Date.now();
         const entry = {
             userId: user._id,
             value,
             description,
             type: "incoming",
-            date: dayjs().format("DD/MM")
+            date: timeInBrazil
         }
         await entriesCollection.insertOne(entry);
         res.sendStatus(201);
@@ -76,6 +80,9 @@ export async function postIncoming(req, res) {
 
 export async function postExpense(req, res) {
     try {
+        const timeZone = dayjs.tz.guess();
+        const timeNow = dayjs().format(`YYYY-MM-DD HH:mm:ss`);
+        const timeInBrazil = dayjs.tz(timeNow).tz(timeZone).format("DD/MM")
         const user = res.locals.user;
         const { value, description } = req.body;
         const entry = {
@@ -83,7 +90,7 @@ export async function postExpense(req, res) {
             value,
             description,
             type: "expense",
-            date: dayjs().format("DD/MM")
+            date: timeInBrazil
         }
         await entriesCollection.insertOne(entry);
         res.sendStatus(201);
