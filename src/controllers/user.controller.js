@@ -40,7 +40,7 @@ export async function postSignIn(req, res) {
 
 export async function postSignUp(req, res) {
     try {
-        let { email, password } = req.body;
+        let { email, password, name } = req.body;
         email = email.toLowerCase();
         const userExists = await usersCollection.findOne({ email });
         if (userExists) {
@@ -48,7 +48,7 @@ export async function postSignUp(req, res) {
         }
         const passwordCrypted = bcrypt.hashSync(password, 10);
         password = passwordCrypted;
-        await usersCollection.insertOne({ email, password });
+        await usersCollection.insertOne({ email, password, name });
         res.sendStatus(201); // created
     } catch (error) {
         console.log(error);
