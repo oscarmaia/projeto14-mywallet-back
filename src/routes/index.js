@@ -5,6 +5,7 @@ import postIncomingRouter from "./postIncomingRouter.js"
 import postExpenseRouter from "./postExpenseRouter.js"
 import logoutRouter from "./logoutRouter.js"
 import deleteEntryRouter from "./deleteEntryRouter.js"
+import updateEntryRouter from "./updateEntryRouter.js"
 import { Router } from "express"
 
 const router = Router();
@@ -15,6 +16,7 @@ router.use(postIncomingRouter);
 router.use(postExpenseRouter);
 router.use(logoutRouter);
 router.use(deleteEntryRouter);
+router.use(updateEntryRouter);
 
 
 

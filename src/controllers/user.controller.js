@@ -122,7 +122,7 @@ export async function postLogout(req, res) {
         const { _id } = req.body
         const session = await sessionsCollection.findOne({ userId: ObjectID(_id) });
         if (!session) {
-            res.sendStatus(404);
+            return res.sendStatus(404);
         }
         await sessionsCollection.deleteOne({ userId: session.userId })
         res.sendStatus(200);
@@ -135,7 +135,7 @@ export async function postLogout(req, res) {
 export async function deleteEntry(req, res) {
     const id = req.params;
     try {
-        await entriesCollection.deleteOne({_id:ObjectID(id)});
+        await entriesCollection.deleteOne({ _id: ObjectID(id) });
         res.sendStatus(200);
     } catch (error) {
         console.log(error)
@@ -147,8 +147,12 @@ export async function deleteEntry(req, res) {
 export async function updateEntry(req, res) {
     const id = req.params;
     try {
-        await entriesCollection.deleteOne({_id:ObjectID(id)});
-        res.sendStatus(200);
+        const entryToBeUpdated = await entriesCollection.findOne({ _id: ObjectID(id) });
+        if (!entryToBeUpdated) {
+            return res.sendStatus(404);
+        }
+        await entriesCollection.updateOne({ _id: entryToBeUpdated._id }, { $set: req.body })
+        res.sendStatus(200)
     } catch (error) {
         console.log(error)
         res.sendStatus(500)
