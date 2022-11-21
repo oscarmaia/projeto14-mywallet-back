@@ -4,7 +4,6 @@ export async function tokenValidate(req, res, next) {
     try {
         const {authorization} = req.headers;
         const token = authorization?.replace("Bearer ", "")
-        console.log(token)
         if (!token) {
             return res.status(404).send("token not found");
         }
