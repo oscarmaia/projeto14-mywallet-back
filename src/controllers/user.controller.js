@@ -11,8 +11,8 @@ dayjs.extend(timezone);
 
 export async function postSignIn(req, res) {
     try {
-        const { email, password } = req.body;
-
+        let { email, password } = req.body;
+        email = email.toLowerCase();
         const userExists = await usersCollection.findOne({ email })
         if (!userExists) {
             return res.status(404).send("email not registered");//not found
@@ -40,15 +40,15 @@ export async function postSignIn(req, res) {
 
 export async function postSignUp(req, res) {
     try {
-        const { email, password } = req.body;
-
+        let { email, password, name } = req.body;
+        email = email.toLowerCase();
         const userExists = await usersCollection.findOne({ email });
         if (userExists) {
             return res.status(409).send("email already registered"); // conflict - already registered
         }
         const passwordCrypted = bcrypt.hashSync(password, 10);
-        req.body.password = passwordCrypted;
-        await usersCollection.insertOne(req.body);
+        password = passwordCrypted;
+        await usersCollection.insertOne({ email, password, name });
         res.sendStatus(201); // created
     } catch (error) {
         console.log(error);
@@ -99,7 +99,20 @@ export async function postExpense(req, res) {
         res.sendStatus(500)
     }
 }
-
+function getBalance(entries) {
+    let amount = 0;
+    for (let i = 0; i < entries.length; i++) {
+        if (entries[i].type === 'incoming') {
+            entries[i].value = +entries[i].value;
+            amount += entries[i].value;
+        }
+        else {
+            entries[i].value = +entries[i].value;
+            amount -= entries[i].value;
+        }
+    }
+    return amount;
+}
 export async function getEntries(req, res) {
     try {
         const user = res.locals.user;
@@ -108,9 +121,11 @@ export async function getEntries(req, res) {
             userId: user._id,
             name: user.name,
             email: user.email,
-            _entries: entriesByUser
+            entries: entriesByUser
         }
-        res.status(200).send(requestedUser);
+        const { entries } = requestedUser;
+        const balance = getBalance(entries);
+        res.status(200).send({ ...requestedUser, balance });
     } catch (error) {
         console.log(error)
         res.sendStatus(500)
