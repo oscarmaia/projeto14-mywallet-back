@@ -11,7 +11,7 @@ dayjs.extend(timezone);
 
 export async function postSignIn(req, res) {
     try {
-        const { email, password } = req.body;
+        let { email, password } = req.body;
         email = email.toLowerCase();
         console.log(email)
         const userExists = await usersCollection.findOne({ email })
@@ -41,7 +41,7 @@ export async function postSignIn(req, res) {
 
 export async function postSignUp(req, res) {
     try {
-        const { email, password } = req.body;
+        let { email, password } = req.body;
         email = email.toLowerCase();
         const userExists = await usersCollection.findOne({ email });
         if (userExists) {
