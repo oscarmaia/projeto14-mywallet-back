@@ -12,7 +12,8 @@ dayjs.extend(timezone);
 export async function postSignIn(req, res) {
     try {
         const { email, password } = req.body;
-        req.body.email = email.toLowerCase();
+        email = email.toLowerCase();
+        console.log(email)
         const userExists = await usersCollection.findOne({ email })
         if (!userExists) {
             return res.status(404).send("email not registered");//not found
@@ -41,14 +42,14 @@ export async function postSignIn(req, res) {
 export async function postSignUp(req, res) {
     try {
         const { email, password } = req.body;
-        req.body.email = email.toLowerCase();
+        email = email.toLowerCase();
         const userExists = await usersCollection.findOne({ email });
         if (userExists) {
             return res.status(409).send("email already registered"); // conflict - already registered
         }
         const passwordCrypted = bcrypt.hashSync(password, 10);
-        req.body.password = passwordCrypted;
-        await usersCollection.insertOne(req.body);
+        password = passwordCrypted;
+        await usersCollection.insertOne({ email, password });
         res.sendStatus(201); // created
     } catch (error) {
         console.log(error);
